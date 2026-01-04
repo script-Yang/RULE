@@ -1,0 +1,34 @@
+CUDA_VISIBLE_DEVICES='5,7' deepspeed --include localhost:5,7 llava/train/train_dpo.py \
+    --model_name_or_path /data02/users/ysc/MMed-RAG/ysc_VLM/llava-med-ysc  \
+    --deepspeed ./scripts/zero3.json \
+    --version v1 \
+    --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
+    --data_path /data02/users/ysc/RULE-main/data/training/alignment/iuxray.json \
+    --image_folder /data02/users/ysc/MMed-RAG/IU/iu_xray/images \
+    --vision_tower /data02/users/ysc/MMed-RAG/ysc_VLM/vis_tow \
+    --mm_projector_type mlp2x_gelu \
+    --mm_vision_select_layer -2 \
+    --mm_use_im_start_end False \
+    --mm_use_im_patch_token False \
+    --image_aspect_ratio pad \
+    --group_by_modality_length True \
+    --bf16 True \
+    --output_dir ./ysc_dpo \
+    --num_train_epochs 3 \
+    --per_device_train_batch_size 1\
+    --per_device_eval_batch_size 1 \
+    --gradient_accumulation_steps 1 \
+    --save_strategy "steps" \
+    --save_steps 200 \
+    --save_total_limit 1 \
+    --learning_rate 1e-7 \
+    --weight_decay 0. \
+    --warmup_ratio 0.03 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 1 \
+    --report_to wandb \
+    --tf32 True \
+    --model_max_length 1024 \
+    --gradient_checkpointing True \
+    --dataloader_num_workers 4 \
+    --lazy_preprocess True
